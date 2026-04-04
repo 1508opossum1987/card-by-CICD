@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визитка | Редактируемая страница</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+        [contenteditable="true"] {
+            background-color: #fef7e0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 100px;
+            cursor: text;
+        }
+        .field-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+        hr {
+            margin: 2rem 0;
+        }
+        .note {
+            background: #eef;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📇 Моя визитка</h1>
+    <p><strong>Как редактировать:</strong> кликните на любое поле с жёлтым фоном и измените текст. 
+       Затем сохраните страницу (Ctrl+S) или скопируйте HTML-код и запушите в репозиторий.</p>
+
+    <hr>
+    <div class="field-group">
+        <label>Имя:</label>
+        <span contenteditable="true" id="firstName">Иван</span>
+    </div>
+    <div class="field-group">
+        <label>Фамилия:</label>
+        <span contenteditable="true" id="lastName">Петров</span>
+    </div>
+    <div class="field-group">
+        <label>Должность:</label>
+        <span contenteditable="true" id="job">Frontend-разработчик</span>
+    </div>
+    <div class="field-group">
+        <label>Описание:</label>
+        <div contenteditable="true" id="bio" style="display: block; margin-left: 100px;">
+            Создаю удобные и быстрые веб-интерфейсы. Люблю автоматизацию и CI/CD.
+        </div>
+    </div>
+    <div class="field-group">
+        <label>Email:</label>
+        <span contenteditable="true" id="email">ivan@example.com</span>
+    </div>
+    <div class="field-group">
+        <label>Телефон:</label>
+        <span contenteditable="true" id="phone">+7 (999) 123-45-67</span>
+    </div>
+    <div class="field-group">
+        <label>GitHub:</label>
+        <span contenteditable="true" id="github">github.com/ivanpetrov</span>
+    </div>
+    <div class="field-group">
+        <label>Город:</label>
+        <span contenteditable="true" id="city">Москва</span>
+    </div>
+    <div class="field-group">
+        <label>Адрес:</label>
+        <span contenteditable="true" id="address">ул. Тверская, д. 1, оф. 5</span>
+    </div>
+    <hr>
+
+    <script>
+        const editableElements = document.querySelectorAll('[contenteditable="true"]');
+        editableElements.forEach(el => {
+            el.addEventListener('blur', () => {
+                console.log(`Изменено поле: ${el.id || 'безымянное'} = ${el.innerText}`);
+            });
+        });
+    </script>
+</body>
+</html>
