@@ -69,3 +69,7 @@ jobs:
       - name: Reload Nginx on server
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo systemctl reload nginx && echo 'Deployment completed at $(date)'"
+      
+      - name: Debug SSH connection
+        run: |
+          ssh -i ~/.ssh/id_rsa -v ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "echo 'SSH works'"
