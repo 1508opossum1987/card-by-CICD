@@ -60,6 +60,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
       - name: Copy files to server via SCP
         run: |
           scp -r index.html css js ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/card-by-CICD/
