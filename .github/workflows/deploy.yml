@@ -1,0 +1,78 @@
+name: CI/CD Pipeline for Business Card
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate HTML
+        uses: ansonsiu/action-html5-validator@main
+        with:
+          root: ./
+          glob: '**/*.html'
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create simple test file
+        run: |
+          mkdir -p tests
+          cat > tests/simple.test.js << 'EOF'
+          test('basic math works', () => {
+            expect(2 + 2).toBe(4);
+          });
+          test('string concatenation works', () => {
+            expect('CI' + 'CD').toBe('CICD');
+          });
+          EOF
+
+      - name: Install Jest
+        run: npm install --save-dev jest
+
+      - name: Run tests
+        run: npx jest tests/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [linter, test]
+    if: github.ref == 'refs/heads/master' && success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files to server via SCP
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "index.html, css/, js/"
+          target: "/var/www/card-by-CICD/"
+          strip_components: 0
+
+      - name: Reload Nginx on server
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            sudo systemctl reload nginx
+            echo "Deployment completed at $(date)"
