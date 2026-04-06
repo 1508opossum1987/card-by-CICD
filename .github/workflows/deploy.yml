@@ -18,7 +18,7 @@ jobs:
           root: ./
           match: '**/*.html'
 
-   test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,12 +29,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Jest
-        run: npm install --save-dev jest
-
       - name: Create test file
         run: |
-          cat > simple.test.js << 'EOF'
+          mkdir -p tests
+          cat > tests/simple.test.js << 'EOF'
           test('basic math works', () => {
             expect(2 + 2).toBe(4);
           });
@@ -43,8 +41,11 @@ jobs:
           });
           EOF
 
+      - name: Install Jest
+        run: npm install --save-dev jest
+
       - name: Run tests
-        run: npx jest simple.test.js
+        run: npx jest tests/
 
   deploy:
     runs-on: ubuntu-latest
